@@ -40,23 +40,57 @@
  *     [{ name: "Rahul", side: "bride" }, { name: "Priya", side: "groom" }],
  *     guest => guest.side === "bride"
  *   )
- *   // => [{ name: "Rahul", side: "bride" }]
+//  *   // => [{ name: "Rahul", side: "bride" }]
  *
  *   handleRSVP({ name: "Amit", rsvp: "yes" }, g => `${g.name} is coming!`, g => `${g.name} declined`)
- *   // => "Amit is coming!"
+//  *   // => "Amit is coming!"
  */
 export function processGuests(guests, filterFn) {
   // Your code here
+  let guestResArr = [];
+  if (!Array.isArray(guests) || typeof filterFn !== "function") return [];
+  for (const item of guests) {
+    const result = filterFn(item);
+    if (result) {
+      guestResArr.push(item);
+    }
+  }
+  return guestResArr;
 }
 
 export function notifyGuests(guests, notifyCallback) {
   // Your code here
+  const guestArr = [];
+  if (!Array.isArray(guests) || typeof notifyCallback !== "function") return [];
+  for (const item of guests) {
+    const guest = notifyCallback(item);
+    guestArr.push(guest);
+  }
+  return guestArr;
 }
 
 export function handleRSVP(guest, onAccept, onDecline) {
   // Your code here
+  if (
+    guest === null ||
+    guest === undefined ||
+    typeof onAccept !== "function" ||
+    typeof onDecline !== "function"
+  )
+    return null;
+  if (guest.rsvp === "yes") {
+    return onAccept(guest);
+  } else if (guest.rsvp === "no") {
+    return onDecline(guest);
+  } else {
+    return null;
+  }
 }
 
 export function transformGuestList(guests, ...transformFns) {
   // Your code here
+  if (!Array.isArray(guests)) return [];
+  return transformFns.reduce((acc, fn) => {
+    return fn(acc);
+  }, guests);
 }

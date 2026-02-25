@@ -46,8 +46,68 @@
  *   ram.addDelivery("Bandra", "CST");         // => 2
  *   ram.completeDelivery(1);                   // => true
  *   ram.getStats();
- *   // => { name: "Ram", area: "Dadar", total: 2, completed: 1, pending: 1, successRate: "50.00%" }
+//  *   // => { name: "Ram", area: "Dadar", total: 2, completed: 1, pending: 1, successRate: "50.00%" }
  */
 export function createDabbawala(name, area) {
   // Your code here
+  let index = 0;
+  let statusArr = [];
+  function addDelivery(from, to) {
+    if (!from || from === "" || !to || to === "") return -1;
+    index++;
+    statusArr.push({
+      id: index,
+      from,
+      to,
+      status: "pending",
+    });
+    return index;
+  }
+
+  function getActiveDeliveries() {
+    return statusArr
+      .filter((item) => item.status === "pending")
+      .map((item) => ({ ...item }));
+  }
+
+  function completeDelivery(id) {
+    if (statusArr.length === 0) return false;
+    const item = statusArr.find((item) => item.id === id);
+    if (!item || item.status !== "pending") return false;
+    item.status = "completed";
+    return true;
+  }
+
+  function getStats() {
+    let successRate;
+    const total = statusArr.length;
+    const completed = statusArr.filter(
+      (item) => item.status === "completed",
+    ).length;
+    const pending = statusArr.filter(
+      (item) => item.status === "pending",
+    ).length;
+    if (statusArr.length === 0) {
+      successRate = "0.00%";
+    } else {
+      const rate = Number((completed / total) * 100).toFixed(2);
+      successRate = `${rate}%`;
+    }
+    return { name, area, total, completed, pending, successRate };
+  }
+
+  function reset() {
+    statusArr.length = 0;
+    index = 0;
+    if (statusArr.length === 0 && index === 0) return true;
+    return false;
+  }
+
+  return {
+    addDelivery,
+    getActiveDeliveries,
+    completeDelivery,
+    getStats,
+    reset,
+  };
 }

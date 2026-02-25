@@ -39,19 +39,80 @@
  * @example
  *   const actionWriter = createDialogueWriter("action");
  *   actionWriter("Shah Rukh", "Raees")
- *   // => "Shah Rukh says: 'Tujhe toh main dekh lunga, Raees!'"
+//  *   // => "Shah Rukh says: 'Tujhe toh main dekh lunga, Raees!'"
  *
  *   const pricer = createTicketPricer(200);
  *   pricer("gold", true)  // => 200 * 1.5 * 1.3 = 390
  */
 export function createDialogueWriter(genre) {
   // Your code here
+  if (
+    genre !== "action" &&
+    genre !== "romance" &&
+    genre !== "comedy" &&
+    genre !== "drama"
+  )
+    return null;
+  return function actionWriter(hero, villain) {
+    if (hero === "" || villain === "" || !villain || !hero) return "...";
+    let dialogue;
+    switch (genre) {
+      case "action":
+        dialogue = `${hero} says: 'Tujhe toh main dekh lunga, ${villain}!'`;
+        break;
+      case "romance":
+        dialogue = `${hero} whispers: '${villain}, tum mere liye sab kuch ho'`;
+        break;
+      case "comedy":
+        dialogue = `${hero} laughs: '${villain} bhai, kya kar rahe ho yaar!'`;
+        break;
+      case "drama":
+        dialogue = `${hero} cries: '${villain}, tune mera sab kuch cheen liya!'`;
+        break;
+      default:
+        return null;
+    }
+    return dialogue;
+  };
 }
 
 export function createTicketPricer(basePrice) {
   // Your code here
+  if (Number.isNaN(basePrice) || basePrice <= 0) return null;
+  return function (seatType, isWeekend) {
+    let multipliers = {
+      silver: 1,
+      gold: 1.5,
+      platinum: 2,
+    };
+
+    if (!multipliers[seatType]) return null;
+
+    let price = basePrice * multipliers[seatType];
+    if (isWeekend) {
+      price *= 1.3;
+    }
+    return Math.round(price);
+  };
 }
 
 export function createRatingCalculator(weights) {
+  if (weights === null || typeof weights !== "object") return null;
   // Your code here
+  // let weights = { story: 0.3, acting: 0.3, direction: 0.2, music: 0.2 };
+  // let scores = { story: 8, acting: 9, direction: 7, music: 8 };
+  return function (scores) {
+    const totalWeight = Object.values(weights).reduce((sum, w) => {
+      return typeof w === "number" && w > 0 ? sum + w : sum;
+    }, 0);
+
+    if (totalWeight === 0) return null;
+    let avgScore = 0;
+    for (const key in scores) {
+      if (scores[key] !== undefined && weights[key] !== undefined) {
+        avgScore += scores[key] * weights[key];
+      }
+    }
+    return Number((avgScore / totalWeight).toFixed(1));
+  };
 }

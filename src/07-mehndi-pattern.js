@@ -54,20 +54,52 @@
  */
 export function repeatChar(char, n) {
   // Your code here
+  if (typeof char !== "string" || char.length === 0) return "";
+  if (n <= 0) return "";
+  return char + repeatChar(char, n - 1);
 }
 
 export function sumNestedArray(arr) {
   // Your code here
+  if (!Array.isArray(arr) || arr.length === 0) return 0;
+  return arr
+    .flat(Infinity)
+    .filter((item) => typeof item === "number")
+    .reduce((acc, curr) => {
+      return acc + curr;
+    }, 0);
 }
 
 export function flattenArray(arr) {
   // Your code here
+  if (!Array.isArray(arr)) return [];
+  return arr.flat(Infinity);
 }
 
+// level
 export function isPalindrome(str) {
   // Your code here
+  if (typeof str !== "string") return false;
+  if (str.length <= 1) return true;
+  let string = str.toLowerCase();
+  if (string[0] !== string[string.length - 1]) return false;
+  const newStr = string.slice(1, -1);
+  return isPalindrome(newStr);
 }
 
+//  Agar n <= 0, return []
+//  *      - Agar n is not a positive integer, return []
 export function generatePattern(n) {
   // Your code here
+  if (!Number.isInteger(n) || n <= 0) return [];
+  function count(i) {
+    if (i === 1) return ["*"];
+    const prev = count(i - 1);
+    return [...prev, "*".repeat(i)];
+  }
+
+  const asc = count(n);
+  const desc = asc.slice(0, -1).reverse();
+
+  return [...asc, ...desc];
 }
