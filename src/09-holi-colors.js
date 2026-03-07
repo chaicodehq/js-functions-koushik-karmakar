@@ -72,6 +72,7 @@ export function adjustBrightness(color, factor) {
   return { name: color.name, r, g, b };
 }
 
+
 export function addToPalette(palette, color) {
   // Your code here
   if (!Array.isArray(palette)) return [color];
